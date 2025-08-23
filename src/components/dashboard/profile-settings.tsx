@@ -10,6 +10,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Separator } from "@/components/ui/separator"
 import { Camera, Palette, Eye } from "lucide-react"
+import { ThemeToggle } from "@/components/theme-toggle"
+import { AvatarUpload } from "@/components/ui/avatar-upload"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -26,7 +28,7 @@ const profileSchema = z.object({
 })
 
 const appearanceSchema = z.object({
-  theme: z.enum(["light", "dark", "forest", "ocean"]),
+  profile_theme: z.enum(["light", "dark", "forest", "ocean"]),
   custom_background_color: z.string().optional(),
   custom_button_color: z.string().optional(),
   custom_text_color: z.string().optional(),
@@ -41,7 +43,7 @@ export function ProfileSettings({ user, onUserUpdate }: ProfileSettingsProps) {
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
   const [appearance, setAppearance] = useState<AppearanceFormData>({
-    theme: "light",
+    profile_theme: "light",
     custom_background_color: "",
     custom_button_color: "",
     custom_text_color: "",
@@ -70,7 +72,7 @@ export function ProfileSettings({ user, onUserUpdate }: ProfileSettingsProps) {
     defaultValues: appearance,
   })
 
-  const selectedTheme = watchAppearance("theme")
+  const selectedTheme = watchAppearance("profile_theme")
 
   const fetchAppearance = async () => {
     try {
@@ -78,7 +80,7 @@ export function ProfileSettings({ user, onUserUpdate }: ProfileSettingsProps) {
       if (response.ok) {
         const data = await response.json()
         const appearanceData = {
-          theme: data.appearance?.theme || "light",
+          profile_theme: data.appearance?.profile_theme || "light",
           custom_background_color: data.appearance?.custom_background_color || "",
           custom_button_color: data.appearance?.custom_button_color || "",
           custom_text_color: data.appearance?.custom_text_color || "",
@@ -192,25 +194,11 @@ export function ProfileSettings({ user, onUserUpdate }: ProfileSettingsProps) {
             )}
 
             {/* Avatar Section */}
-            <div className="flex items-center space-x-6">
-              <Avatar className="h-20 w-20">
-                <AvatarImage src={user?.avatar_url || "/placeholder.svg"} alt={user?.name} />
-                <AvatarFallback className="text-lg">
-                  {user?.name
-                    ?.split(" ")
-                    .map((n) => n[0])
-                    .join("")
-                    .toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <Button variant="outline" size="sm" disabled>
-                  <Camera className="h-4 w-4 mr-2" />
-                  Change Avatar
-                </Button>
-                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Avatar upload coming soon</p>
-              </div>
-            </div>
+            <AvatarUpload
+              currentAvatar={user?.avatar_url}
+              userName={user?.name}
+              onAvatarUpdate={onUserUpdate}
+            />
 
             {/* Form Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -265,9 +253,27 @@ export function ProfileSettings({ user, onUserUpdate }: ProfileSettingsProps) {
             <Palette className="h-5 w-5" />
             Appearance & Themes
           </CardTitle>
-          <CardDescription>Customize how your profile looks to visitors</CardDescription>
+          <CardDescription>Customize how your profile looks to visitors and set your app theme</CardDescription>
         </CardHeader>
         <CardContent>
+          {/* Application Theme */}
+          <div className="mb-6 p-4 border rounded-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="font-medium">Application Theme</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Choose your preferred theme for the dashboard</p>
+              </div>
+              <ThemeToggle />
+            </div>
+          </div>
+          
+          <Separator className="my-6" />
+          
+          {/* Profile Theme */}
+          <div>
+            <h4 className="font-medium mb-4">Profile Theme</h4>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Customize how your public profile appears to visitors</p>
+          </div>
           <form onSubmit={handleAppearanceSubmit(onAppearanceSubmit)} className="space-y-6">
             {/* Theme Selection */}
             <div className="space-y-4">
@@ -288,7 +294,7 @@ export function ProfileSettings({ user, onUserUpdate }: ProfileSettingsProps) {
                           ? "border-blue-500 ring-2 ring-blue-200"
                           : "border-gray-200 hover:border-gray-300"
                       }`}
-                      onClick={() => setAppearanceValue("theme", theme.value as any)}
+                      onClick={() => setAppearanceValue("profile_theme", theme.value as any)}
                     >
                       <div className={`${preview.bg} rounded-md p-3 mb-2`}>
                         <div className={`${preview.text} text-xs font-medium mb-1`}>{user?.name}</div>
@@ -300,7 +306,7 @@ export function ProfileSettings({ user, onUserUpdate }: ProfileSettingsProps) {
                   )
                 })}
               </div>
-              <input type="hidden" {...registerAppearance("theme")} />
+              <input type="hidden" {...registerAppearance("profile_theme")} />
             </div>
 
             <Separator />

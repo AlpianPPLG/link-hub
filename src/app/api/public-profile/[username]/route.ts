@@ -25,7 +25,12 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     // Get appearance settings
     const appearanceResults = (await executeQuery("SELECT * FROM appearances WHERE user_id = ?", [user.id])) as any[]
-    const appearance = appearanceResults[0] || { theme: "light" }
+    const appearance = appearanceResults[0] || { 
+      profile_theme: "light",
+      custom_background_color: null,
+      custom_button_color: null,
+      custom_text_color: null
+    }
 
     return NextResponse.json(
       {

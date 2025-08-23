@@ -25,31 +25,6 @@ export function SortableLinks({ links, onLinksReordered, isDragging = false }: S
   // Sort links by order to ensure proper display
   const sortedLinks = [...links].sort((a, b) => a.order - b.order)
 
-  const handleReorder = async (newOrder: string[]) => {
-    try {
-      console.log("📤 Sending reorder request:", newOrder)
-      
-      const response = await fetch("/api/links/reorder", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ linkIds: newOrder }),
-      })
-
-      if (!response.ok) {
-        throw new Error("Failed to reorder links")
-      }
-
-      console.log("✅ Reorder API response:", await response.json())
-      toast.success("Links reordered successfully!")
-      onLinksReordered(newOrder)
-    } catch (error) {
-      console.error("❌ Error reordering links:", error)
-      toast.error("Failed to reorder links. Please try again.")
-    }
-  }
-
   const handleLinkUpdated = (updatedLink: Link) => {
     console.log("🔗 Link updated:", updatedLink.title)
     // Just notify parent about the update
@@ -85,7 +60,6 @@ export function SortableLinks({ links, onLinksReordered, isDragging = false }: S
           onLinkUpdated={handleLinkUpdated}
           onLinkDeleted={handleLinkDeleted}
           onToggleChanged={handleToggleChanged}
-          onReorder={handleReorder}
           isDragging={isDragging}
         />
       ))}
@@ -98,11 +72,10 @@ interface SortableLinkProps {
   onLinkUpdated: (link: Link) => void
   onLinkDeleted: (linkId: string) => void
   onToggleChanged: (linkId: string, newValue: boolean) => void
-  onReorder: (newOrder: string[]) => void
   isDragging?: boolean
 }
 
-function SortableLink({ link, onLinkUpdated, onLinkDeleted, onToggleChanged, onReorder, isDragging = false }: SortableLinkProps) {
+function SortableLink({ link, onLinkUpdated, onLinkDeleted, onToggleChanged, isDragging = false }: SortableLinkProps) {
   const {
     attributes,
     listeners,

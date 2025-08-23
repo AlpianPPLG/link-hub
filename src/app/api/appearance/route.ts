@@ -4,7 +4,7 @@ import { executeQuery } from "@/lib/database"
 import { z } from "zod"
 
 const appearanceSchema = z.object({
-  theme: z.enum(["light", "dark", "forest", "ocean"]),
+  profile_theme: z.enum(["light", "dark", "forest", "ocean"]),
   custom_background_color: z.string().optional(),
   custom_button_color: z.string().optional(),
   custom_text_color: z.string().optional(),
@@ -25,7 +25,14 @@ export async function GET(request: NextRequest) {
 
     const appearance = (await executeQuery("SELECT * FROM appearances WHERE user_id = ?", [user.id])) as any[]
 
-    return NextResponse.json({ appearance: appearance[0] || { theme: "light" } }, { status: 200 })
+    return NextResponse.json({ 
+      appearance: appearance[0] || { 
+        profile_theme: "light",
+        custom_background_color: null,
+        custom_button_color: null,
+        custom_text_color: null
+      } 
+    }, { status: 200 })
   } catch (error) {
     console.error("Error fetching appearance:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
@@ -56,10 +63,10 @@ export async function PUT(request: NextRequest) {
     if (existingAppearance.length === 0) {
       // Create new appearance record
       await executeQuery(
-        "INSERT INTO appearances (user_id, theme, custom_background_color, custom_button_color, custom_text_color) VALUES (?, ?, ?, ?, ?)",
+        "INSERT INTO appearances (user_id, profile_theme, custom_background_color, custom_button_color, custom_text_color) VALUES (?, ?, ?, ?, ?)",
         [
           user.id,
-          validatedData.theme,
+          validatedData.profile_theme,
           validatedData.custom_background_color || null,
           validatedData.custom_button_color || null,
           validatedData.custom_text_color || null,
@@ -68,9 +75,9 @@ export async function PUT(request: NextRequest) {
     } else {
       // Update existing appearance record
       await executeQuery(
-        "UPDATE appearances SET theme = ?, custom_background_color = ?, custom_button_color = ?, custom_text_color = ?, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?",
+        "UPDATE appearances SET profile_theme = ?, custom_background_color = ?, custom_button_color = ?, custom_text_color = ?, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?",
         [
-          validatedData.theme,
+          validatedData.profile_theme,
           validatedData.custom_background_color || null,
           validatedData.custom_button_color || null,
           validatedData.custom_text_color || null,

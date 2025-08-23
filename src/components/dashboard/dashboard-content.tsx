@@ -12,6 +12,7 @@ import { LinkManager } from "./link-manager"
 import { ProfileSettings } from "./profile-settings"
 import { AnalyticsOverview } from "./analytics-overview"
 import { DashboardSkeleton } from "@/components/loading-skeleton"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { toast } from "sonner"
 
 interface User {
@@ -129,6 +130,7 @@ export function DashboardContent() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              <ThemeToggle />
               <Button
                 variant="outline"
                 size="sm"

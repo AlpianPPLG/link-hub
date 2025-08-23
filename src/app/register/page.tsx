@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { LinkIcon, Loader2, CheckCircle } from "lucide-react"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -89,6 +90,11 @@ export default function RegisterPage() {
   if (success) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+        {/* Theme Toggle - Top Right */}
+        <div className="fixed top-4 right-4 z-10">
+          <ThemeToggle />
+        </div>
+        
         <Card className="w-full max-w-md">
           <CardContent className="pt-6">
             <div className="text-center">
@@ -109,6 +115,11 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+      {/* Theme Toggle - Top Right */}
+      <div className="fixed top-4 right-4 z-10">
+        <ThemeToggle />
+      </div>
+      
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">

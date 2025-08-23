@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { DndContext, DragEndEvent, closestCenter, DragStartEvent } from "@dnd-kit/core"
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { SortableLinks } from "./sortable-links"
+import { toast } from "sonner"
 
 interface Link {
   id: string
@@ -69,8 +70,35 @@ export function DndContextWrapper({ links, onLinksReordered }: DndContextWrapper
         // Update local state immediately for visual feedback
         setItems(newOrder)
 
-        // Call parent callback to persist changes
-        onLinksReordered(newOrder)
+        // Make API call to persist changes
+        try {
+          console.log("📤 Sending reorder request:", newOrder)
+          
+          const response = await fetch("/api/links/reorder", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ linkIds: newOrder }),
+          })
+
+          if (!response.ok) {
+            throw new Error("Failed to reorder links")
+          }
+
+          console.log("✅ Reorder API response:", await response.json())
+          toast.success("Links reordered successfully!")
+          
+          // Only call parent callback after successful API call
+          onLinksReordered(newOrder)
+        } catch (error) {
+          console.error("❌ Error reordering links:", error)
+          toast.error("Failed to reorder links. Please try again.")
+          // Revert local state on error
+          setItems(items)
+          // Still call parent to refresh from server
+          onLinksReordered([])
+        }
       }
     }
   }

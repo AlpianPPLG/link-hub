@@ -5,6 +5,7 @@ import { GeistMono } from "geist/font/mono"
 import "./globals.css"
 import { ErrorBoundary } from "@/components/error-boundary"
 import { Toaster } from "@/components/ui/sonner"
+import { ThemeProvider } from "@/components/theme-provider"
 
 export const metadata: Metadata = {
   title: "LinkHub - Your Personal Link-in-Bio Tool",
@@ -38,8 +39,24 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const theme = localStorage.getItem('theme');
+                if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches) || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.documentElement.classList.add('dark');
+                  document.documentElement.style.colorScheme = 'dark';
+                } else {
+                  document.documentElement.classList.remove('dark');
+                  document.documentElement.style.colorScheme = 'light';
+                }
+              } catch (_) {}
+            `,
+          }}
+        />
         <style>{`
 html {
   font-family: ${GeistSans.style.fontFamily};
@@ -49,10 +66,18 @@ html {
         `}</style>
       </head>
       <body>
-        <ErrorBoundary>
-          {children}
-          <Toaster position="top-right" />
-        </ErrorBoundary>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+          storageKey="theme"
+        >
+          <ErrorBoundary>
+            {children}
+            <Toaster position="top-right" />
+          </ErrorBoundary>
+        </ThemeProvider>
       </body>
     </html>
   )

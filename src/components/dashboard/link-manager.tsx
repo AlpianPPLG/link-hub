@@ -48,10 +48,19 @@ export function LinkManager({ links, onLinksChange }: LinkManagerProps) {
     onLinksChange()
   }
 
-  const handleLinksReordered = (newOrder: string[]) => {
+  const handleLinksReordered = async (newOrder: string[]) => {
     console.log("🔄 Links reordered in LinkManager:", newOrder)
-    // The reordering is handled by the API, just refresh the links
-    onLinksChange()
+    
+    // If newOrder is empty, it means there was an error and we should refresh immediately
+    if (newOrder.length === 0) {
+      onLinksChange()
+      return
+    }
+    
+    // Add a small delay to ensure database has been updated
+    setTimeout(() => {
+      onLinksChange()
+    }, 200)
   }
 
   if (isLoading && links.length === 0) {

@@ -101,7 +101,7 @@ export async function createUser(userData: {
     ])
 
     // Create default appearance settings
-    await executeQuery("INSERT INTO appearances (user_id, theme) VALUES (?, ?)", [userId, "light"])
+    await executeQuery("INSERT INTO appearances (user_id, profile_theme) VALUES (?, ?)", [userId, "light"])
 
     const user = await getUserByEmail(userData.email)
     return user

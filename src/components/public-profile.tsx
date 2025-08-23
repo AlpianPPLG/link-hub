@@ -25,7 +25,7 @@ interface Link {
 }
 
 interface Appearance {
-  theme: string
+  profile_theme: string
   background_image_url?: string
   custom_background_color?: string
   custom_button_color?: string
@@ -134,7 +134,7 @@ export function PublicProfile({ user, links, appearance }: PublicProfileProps) {
       },
     }
 
-    return baseThemes[appearance.theme as keyof typeof baseThemes] || baseThemes.light
+    return baseThemes[appearance.profile_theme as keyof typeof baseThemes] || baseThemes.light
   }
 
   const themeClasses = getThemeClasses()

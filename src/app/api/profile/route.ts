@@ -6,6 +6,7 @@ import { z } from "zod"
 const profileSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   bio: z.string().max(160, "Bio must be less than 160 characters").optional(),
+  avatar_url: z.string().url().optional().or(z.literal("")),
 })
 
 // PUT - Update profile
@@ -24,9 +25,10 @@ export async function PUT(request: NextRequest) {
     const body = await request.json()
     const validatedData = profileSchema.parse(body)
 
-    await executeQuery("UPDATE users SET name = ?, bio = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", [
+    await executeQuery("UPDATE users SET name = ?, bio = ?, avatar_url = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", [
       validatedData.name,
       validatedData.bio || null,
+      validatedData.avatar_url || null,
       user.id,
     ])
 

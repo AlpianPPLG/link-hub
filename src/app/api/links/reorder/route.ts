@@ -1,10 +1,22 @@
 import { NextRequest, NextResponse } from "next/server"
 import { executeQuery } from "@/lib/database"
+import { verifyToken } from "@/lib/auth"
 
 export async function PUT(request: NextRequest) {
   try {
+    // Verify authentication
+    const token = request.cookies.get("auth-token")?.value
+    if (!token) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
+    const user = verifyToken(token)
+    if (!user) {
+      return NextResponse.json({ error: "Invalid token" }, { status: 401 })
+    }
+
     const { linkIds } = await request.json()
-    console.log("Reorder request received:", { linkIds })
+    console.log("Reorder request received:", { linkIds, userId: user.id })
 
     if (!linkIds || !Array.isArray(linkIds)) {
       console.log("Invalid request body:", { linkIds })
@@ -24,15 +36,15 @@ export async function PUT(request: NextRequest) {
 
     console.log("Starting reorder process for", linkIds.length, "links")
 
-    // Update the order for each link
+    // Update the order for each link, but only for the authenticated user's links
     for (let i = 0; i < linkIds.length; i++) {
       const newOrder = i + 1
       const linkId = linkIds[i]
-      console.log(`Updating link ${linkId} to order ${newOrder}`)
+      console.log(`Updating link ${linkId} to order ${newOrder} for user ${user.id}`)
       
       await executeQuery(
-        "UPDATE links SET `order` = ? WHERE id = ?",
-        [newOrder, linkId]
+        "UPDATE links SET `order` = ? WHERE id = ? AND user_id = ?",
+        [newOrder, linkId, user.id]
       )
     }
 

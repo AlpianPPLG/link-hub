@@ -2,6 +2,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { LinkIcon, Users, Zap, BarChart3 } from "lucide-react"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export default function HomePage() {
   return (
@@ -14,6 +15,7 @@ export default function HomePage() {
             <span className="text-2xl font-bold text-gray-900 dark:text-white">LinkHub</span>
           </div>
           <div className="flex items-center space-x-4">
+            <ThemeToggle />
             <Link href="/login">
               <Button variant="ghost">Login</Button>
             </Link>

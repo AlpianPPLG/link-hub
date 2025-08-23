@@ -19,7 +19,7 @@ interface Link {
 }
 
 interface Appearance {
-  theme: string
+  profile_theme: string
   background_image_url?: string
   custom_background_color?: string
   custom_button_color?: string
@@ -54,7 +54,12 @@ async function getUserProfile(username: string): Promise<{
     const appearanceResults = (await executeQuery("SELECT * FROM appearances WHERE user_id = ?", [
       user.id,
     ])) as Appearance[]
-    const appearance = appearanceResults[0] || { theme: "light" }
+    const appearance = appearanceResults[0] || { 
+      profile_theme: "light",
+      custom_background_color: null,
+      custom_button_color: null,
+      custom_text_color: null
+    }
 
     return { user, links, appearance }
   } catch (error) {
