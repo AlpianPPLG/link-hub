@@ -18,7 +18,12 @@ export async function executeQuery(query: string, params: any[] = []) {
     const [results] = await pool.execute(query, params)
     return results
   } catch (error) {
-    console.error("Database query error:", error)
+    console.error("Database query error:", {
+      query,
+      params,
+      error: error instanceof Error ? error.message : error,
+      stack: error instanceof Error ? error.stack : undefined
+    })
     throw error
   }
 }

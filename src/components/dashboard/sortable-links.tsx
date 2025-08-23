@@ -1,6 +1,5 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { DraggableLink } from "./draggable-link"
@@ -19,17 +18,17 @@ interface Link {
 interface SortableLinksProps {
   links: Link[]
   onLinksReordered: (newOrder: string[]) => void
+  isDragging?: boolean
 }
 
-export function SortableLinks({ links, onLinksReordered }: SortableLinksProps) {
-  const [sortedLinks, setSortedLinks] = useState<Link[]>(links)
-
-  useEffect(() => {
-    setSortedLinks(links)
-  }, [links])
+export function SortableLinks({ links, onLinksReordered, isDragging = false }: SortableLinksProps) {
+  // Sort links by order to ensure proper display
+  const sortedLinks = [...links].sort((a, b) => a.order - b.order)
 
   const handleReorder = async (newOrder: string[]) => {
     try {
+      console.log("📤 Sending reorder request:", newOrder)
+      
       const response = await fetch("/api/links/reorder", {
         method: "PUT",
         headers: {
@@ -42,12 +41,31 @@ export function SortableLinks({ links, onLinksReordered }: SortableLinksProps) {
         throw new Error("Failed to reorder links")
       }
 
+      console.log("✅ Reorder API response:", await response.json())
       toast.success("Links reordered successfully!")
       onLinksReordered(newOrder)
     } catch (error) {
-      console.error("Error reordering links:", error)
+      console.error("❌ Error reordering links:", error)
       toast.error("Failed to reorder links. Please try again.")
     }
+  }
+
+  const handleLinkUpdated = (updatedLink: Link) => {
+    console.log("🔗 Link updated:", updatedLink.title)
+    // Just notify parent about the update
+    onLinksReordered(links.map(l => l.id))
+  }
+
+  const handleLinkDeleted = (deletedLinkId: string) => {
+    console.log("🗑️ Link deleted:", deletedLinkId)
+    // Just notify parent about the deletion
+    onLinksReordered(links.filter(l => l.id !== deletedLinkId).map(l => l.id))
+  }
+
+  const handleToggleChanged = (linkId: string, newValue: boolean) => {
+    console.log("🔄 Toggle changed:", linkId, newValue)
+    // Just notify parent about the toggle change
+    onLinksReordered(links.map(l => l.id))
   }
 
   if (sortedLinks.length === 0) {
@@ -64,9 +82,11 @@ export function SortableLinks({ links, onLinksReordered }: SortableLinksProps) {
         <SortableLink
           key={link.id}
           link={link}
-          onLinkUpdated={() => onLinksReordered(sortedLinks.map(l => l.id))}
-          onLinkDeleted={() => onLinksReordered(sortedLinks.filter(l => l.id !== link.id).map(l => l.id))}
-          onToggleChanged={() => onLinksReordered(sortedLinks.map(l => l.id))}
+          onLinkUpdated={handleLinkUpdated}
+          onLinkDeleted={handleLinkDeleted}
+          onToggleChanged={handleToggleChanged}
+          onReorder={handleReorder}
+          isDragging={isDragging}
         />
       ))}
     </div>
@@ -75,19 +95,21 @@ export function SortableLinks({ links, onLinksReordered }: SortableLinksProps) {
 
 interface SortableLinkProps {
   link: Link
-  onLinkUpdated: () => void
-  onLinkDeleted: () => void
-  onToggleChanged: () => void
+  onLinkUpdated: (link: Link) => void
+  onLinkDeleted: (linkId: string) => void
+  onToggleChanged: (linkId: string, newValue: boolean) => void
+  onReorder: (newOrder: string[]) => void
+  isDragging?: boolean
 }
 
-function SortableLink({ link, onLinkUpdated, onLinkDeleted, onToggleChanged }: SortableLinkProps) {
+function SortableLink({ link, onLinkUpdated, onLinkDeleted, onToggleChanged, onReorder, isDragging = false }: SortableLinkProps) {
   const {
     attributes,
     listeners,
     setNodeRef,
     transform,
     transition,
-    isDragging,
+    isDragging: isLinkDragging,
   } = useSortable({ id: link.id })
 
   const style = {
@@ -99,11 +121,11 @@ function SortableLink({ link, onLinkUpdated, onLinkDeleted, onToggleChanged }: S
     <div ref={setNodeRef} style={style}>
       <DraggableLink
         link={link}
-        onLinkUpdated={onLinkUpdated}
-        onLinkDeleted={onLinkDeleted}
-        onToggleChanged={onToggleChanged}
+        onLinkUpdated={() => onLinkUpdated(link)}
+        onLinkDeleted={() => onLinkDeleted(link.id)}
+        onToggleChanged={() => onToggleChanged(link.id, link.is_active)}
         dragHandleProps={{ ...attributes, ...listeners }}
-        isDragging={isDragging}
+        isDragging={isLinkDragging || isDragging}
       />
     </div>
   )

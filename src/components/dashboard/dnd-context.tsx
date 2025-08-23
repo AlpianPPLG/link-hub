@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core"
+import { useState, useEffect } from "react"
+import { DndContext, DragEndEvent, closestCenter, DragStartEvent } from "@dnd-kit/core"
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { SortableLinks } from "./sortable-links"
 
@@ -21,43 +21,71 @@ interface DndContextWrapperProps {
 }
 
 export function DndContextWrapper({ links, onLinksReordered }: DndContextWrapperProps) {
-  const [items, setItems] = useState(links.map(link => link.id))
+  const [items, setItems] = useState<string[]>([])
+  const [isDragging, setIsDragging] = useState(false)
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  // Update items when links change - sort by order
+  useEffect(() => {
+    const sortedLinks = [...links].sort((a, b) => a.order - b.order)
+    setItems(sortedLinks.map(link => link.id))
+    console.log("🔄 Items updated:", sortedLinks.map(l => ({ id: l.id, title: l.title, order: l.order })))
+  }, [links])
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setIsDragging(true)
+    const link = links.find(l => l.id === event.active.id)
+    console.log("🚀 Drag started for link:", link?.title || event.active.id)
+  }
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    setIsDragging(false)
     const { active, over } = event
 
-    if (active.id !== over?.id) {
-      setItems((items) => {
-        const oldIndex = items.indexOf(active.id as string)
-        const newIndex = items.indexOf(over?.id as string)
+    console.log("🏁 Drag ended:", { 
+      active: active.id, 
+      over: over?.id,
+      currentItems: items 
+    })
 
-        const newItems = [...items]
-        newItems.splice(oldIndex, 1)
-        newItems.splice(newIndex, 0, active.id as string)
+    if (active.id !== over?.id && over) {
+      const oldIndex = items.indexOf(active.id as string)
+      const newIndex = items.indexOf(over.id as string)
 
-        return newItems
+      console.log("🔄 Reordering:", { 
+        oldIndex, 
+        newIndex, 
+        oldId: active.id, 
+        newId: over.id 
       })
 
-      // Call the parent callback with new order
-      const newOrder = [...items]
-      const oldIndex = newOrder.indexOf(active.id as string)
-      const newIndex = newOrder.indexOf(over?.id as string)
-      newOrder.splice(oldIndex, 1)
-      newOrder.splice(newIndex, 0, active.id as string)
-      
-      onLinksReordered(newOrder)
+      if (oldIndex !== -1 && newIndex !== -1) {
+        // Create new order array
+        const newOrder = [...items]
+        newOrder.splice(oldIndex, 1)
+        newOrder.splice(newIndex, 0, active.id as string)
+
+        console.log("✅ New order:", newOrder)
+
+        // Update local state immediately for visual feedback
+        setItems(newOrder)
+
+        // Call parent callback to persist changes
+        onLinksReordered(newOrder)
+      }
     }
   }
 
   return (
     <DndContext
       collisionDetection={closestCenter}
+      onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
       <SortableContext items={items} strategy={verticalListSortingStrategy}>
         <SortableLinks 
           links={links} 
           onLinksReordered={onLinksReordered}
+          isDragging={isDragging}
         />
       </SortableContext>
     </DndContext>

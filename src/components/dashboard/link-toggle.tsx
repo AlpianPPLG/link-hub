@@ -30,14 +30,17 @@ export function LinkToggle({ linkId, isActive, onToggleChanged }: LinkToggleProp
       })
 
       if (!response.ok) {
-        throw new Error("Failed to update link status")
+        const errorData = await response.json().catch(() => ({}))
+        const errorMessage = errorData.error || `HTTP ${response.status}: ${response.statusText}`
+        throw new Error(errorMessage)
       }
 
       toast.success(newValue ? "Link enabled" : "Link disabled")
       onToggleChanged()
     } catch (error) {
       console.error("Error updating link status:", error)
-      toast.error("Failed to update link status. Please try again.")
+      const errorMessage = error instanceof Error ? error.message : "Failed to update link status. Please try again."
+      toast.error(errorMessage)
       // Revert the toggle if the API call failed
       setChecked(!newValue)
     } finally {

@@ -9,7 +9,7 @@ import { toast } from "sonner"
 interface DeleteLinkDialogProps {
   linkId: string
   linkTitle: string
-  onLinkDeleted: () => void
+  onLinkDeleted: (linkId: string) => void
 }
 
 export function DeleteLinkDialog({ linkId, linkTitle, onLinkDeleted }: DeleteLinkDialogProps) {
@@ -28,7 +28,7 @@ export function DeleteLinkDialog({ linkId, linkTitle, onLinkDeleted }: DeleteLin
       }
 
       toast.success("Link deleted successfully!")
-      onLinkDeleted()
+      onLinkDeleted(linkId)
     } catch (error) {
       console.error("Error deleting link:", error)
       toast.error("Failed to delete link. Please try again.")

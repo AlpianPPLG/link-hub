@@ -19,7 +19,7 @@ interface Link {
 
 interface EditLinkModalProps {
   link: Link
-  onLinkUpdated: () => void
+  onLinkUpdated: (updatedLink: Link) => void
 }
 
 export function EditLinkModal({ link, onLinkUpdated }: EditLinkModalProps) {
@@ -76,9 +76,17 @@ export function EditLinkModal({ link, onLinkUpdated }: EditLinkModalProps) {
         throw new Error("Failed to update link")
       }
 
+      // Create updated link object
+      const updatedLink = {
+        ...link,
+        title: formData.title.trim(),
+        url: formData.url.trim(),
+        description: formData.description.trim(),
+      }
+
       toast.success("Link updated successfully!")
       setOpen(false)
-      onLinkUpdated()
+      onLinkUpdated(updatedLink)
     } catch (error) {
       console.error("Error updating link:", error)
       toast.error("Failed to update link. Please try again.")

@@ -1,12 +1,14 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { executeQuery } from "@/lib/database"
 
-export async function GET(request: NextRequest, { params }: { params: { username: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ username: string }> }) {
   try {
+    const { username } = await params
+    
     // Get user data
     const userResults = (await executeQuery(
       "SELECT id, name, username, avatar_url, bio FROM users WHERE username = ?",
-      [params.username],
+      [username],
     )) as any[]
 
     if (userResults.length === 0) {
