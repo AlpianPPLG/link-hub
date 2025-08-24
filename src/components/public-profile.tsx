@@ -6,7 +6,8 @@ import { useState, useEffect } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { ExternalLink, Share2, Check } from "lucide-react"
+import { SocialMediaIcons } from "@/components/ui/social-media-icons"
+import { ExternalLink, Share2, Check, User as UserIcon, Heart, Code } from "lucide-react"
 
 interface User {
   id: string
@@ -14,6 +15,11 @@ interface User {
   username: string
   avatar_url?: string
   bio?: string
+  about_me?: string
+  hobby?: string
+  tech_stack?: string
+  footer_message?: string
+  welcome_message?: string
 }
 
 interface Link {
@@ -32,13 +38,21 @@ interface Appearance {
   custom_text_color?: string
 }
 
+interface SocialLink {
+  platform: string
+  url: string
+  is_active: boolean
+  display_order: number
+}
+
 interface PublicProfileProps {
   user: User
   links: Link[]
   appearance: Appearance
+  socialLinks: SocialLink[]
 }
 
-export function PublicProfile({ user, links, appearance }: PublicProfileProps) {
+export function PublicProfile({ user, links, appearance, socialLinks }: PublicProfileProps) {
   const [copiedUrl, setCopiedUrl] = useState(false)
 
   useEffect(() => {
@@ -204,6 +218,26 @@ export function PublicProfile({ user, links, appearance }: PublicProfileProps) {
             </p>
           )}
 
+          {/* Welcome Message */}
+          {user.welcome_message && (
+            <div className={`${themeClasses.card} rounded-lg p-4 mb-6 border`}>
+              <p className={`${themeClasses.text} text-center font-medium leading-relaxed`} style={getCustomTextStyles()}>
+                {user.welcome_message}
+              </p>
+            </div>
+          )}
+
+          {/* Social Media Icons */}
+          {socialLinks && socialLinks.length > 0 && (
+            <div className="mb-6">
+              <SocialMediaIcons 
+                socialLinks={socialLinks} 
+                iconSize="md" 
+                className="justify-center"
+              />
+            </div>
+          )}
+
           {/* Share Button */}
           <Button
             variant="outline"
@@ -258,17 +292,79 @@ export function PublicProfile({ user, links, appearance }: PublicProfileProps) {
           )}
         </div>
 
+        {/* Profile Information Sections */}
+        <div className="space-y-6 mt-8">
+          {/* About Me Section */}
+          {user.about_me && (
+            <Card className={themeClasses.card}>
+              <CardContent className="p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <UserIcon className={`h-5 w-5 ${themeClasses.text}`} />
+                  <h3 className={`font-semibold ${themeClasses.text}`} style={getCustomTextStyles()}>
+                    About Me
+                  </h3>
+                </div>
+                <p className={`${themeClasses.text} leading-relaxed whitespace-pre-wrap`} style={getCustomTextStyles()}>
+                  {user.about_me}
+                </p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Tech Stack Section */}
+          {user.tech_stack && (
+            <Card className={themeClasses.card}>
+              <CardContent className="p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Code className={`h-5 w-5 ${themeClasses.text}`} />
+                  <h3 className={`font-semibold ${themeClasses.text}`} style={getCustomTextStyles()}>
+                    Tech Stack
+                  </h3>
+                </div>
+                <p className={`${themeClasses.text} leading-relaxed whitespace-pre-wrap`} style={getCustomTextStyles()}>
+                  {user.tech_stack}
+                </p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Hobbies Section */}
+          {user.hobby && (
+            <Card className={themeClasses.card}>
+              <CardContent className="p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Heart className={`h-5 w-5 ${themeClasses.text}`} />
+                  <h3 className={`font-semibold ${themeClasses.text}`} style={getCustomTextStyles()}>
+                    Hobbies & Interests
+                  </h3>
+                </div>
+                <p className={`${themeClasses.text} leading-relaxed whitespace-pre-wrap`} style={getCustomTextStyles()}>
+                  {user.hobby}
+                </p>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+
         {/* Footer */}
         <div className="text-center mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
-          <p className={`text-sm ${themeClasses.subtext} mb-2`}>Create your own LinkHub</p>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => window.open("/", "_blank")}
-            className={`${themeClasses.card} ${themeClasses.text} border-current`}
-          >
-            Get Started Free
-          </Button>
+          {user.footer_message ? (
+            <p className={`text-sm ${themeClasses.text} mb-4 leading-relaxed`} style={getCustomTextStyles()}>
+              {user.footer_message}
+            </p>
+          ) : (
+            <>
+              <p className={`text-sm ${themeClasses.subtext} mb-2`}>Create your own LinkHub</p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => window.open("/", "_blank")}
+                className={`${themeClasses.card} ${themeClasses.text} border-current`}
+              >
+                Get Started Free
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </div>

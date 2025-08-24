@@ -7,7 +7,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     
     // Get user data
     const userResults = (await executeQuery(
-      "SELECT id, name, username, avatar_url, bio FROM users WHERE username = ?",
+      "SELECT id, name, username, avatar_url, bio, about_me, hobby, tech_stack, footer_message, welcome_message FROM users WHERE username = ?",
       [username],
     )) as any[]
 
@@ -21,6 +21,12 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const links = await executeQuery(
       "SELECT id, title, url, `order`, clicks FROM links WHERE user_id = ? AND is_active = TRUE ORDER BY `order` ASC",
       [user.id],
+    )
+
+    // Get social links
+    const socialLinks = await executeQuery(
+      "SELECT platform, url, is_active, display_order FROM social_links WHERE user_id = ? AND is_active = TRUE ORDER BY display_order ASC, created_at ASC",
+      [user.id]
     )
 
     // Get appearance settings
@@ -37,6 +43,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         user,
         links,
         appearance,
+        socialLinks,
       },
       { status: 200 },
     )

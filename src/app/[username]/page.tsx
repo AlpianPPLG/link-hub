@@ -8,6 +8,11 @@ interface User {
   username: string
   avatar_url?: string
   bio?: string
+  about_me?: string
+  hobby?: string
+  tech_stack?: string
+  footer_message?: string
+  welcome_message?: string
 }
 
 interface Link {
@@ -30,11 +35,12 @@ async function getUserProfile(username: string): Promise<{
   user: User
   links: Link[]
   appearance: Appearance
+  socialLinks: any[]
 } | null> {
   try {
     // Get user data
     const userResults = (await executeQuery(
-      "SELECT id, name, username, avatar_url, bio FROM users WHERE username = ?",
+      "SELECT id, name, username, avatar_url, bio, about_me, hobby, tech_stack, footer_message, welcome_message FROM users WHERE username = ?",
       [username],
     )) as User[]
 
@@ -50,6 +56,12 @@ async function getUserProfile(username: string): Promise<{
       [user.id],
     )) as Link[]
 
+    // Get social links
+    const socialLinks = (await executeQuery(
+      "SELECT platform, url, is_active, display_order FROM social_links WHERE user_id = ? AND is_active = TRUE ORDER BY display_order ASC, created_at ASC",
+      [user.id]
+    )) as any[]
+
     // Get appearance settings
     const appearanceResults = (await executeQuery("SELECT * FROM appearances WHERE user_id = ?", [
       user.id,
@@ -61,7 +73,7 @@ async function getUserProfile(username: string): Promise<{
       custom_text_color: null
     }
 
-    return { user, links, appearance }
+    return { user, links, appearance, socialLinks }
   } catch (error) {
     console.error("Error fetching user profile:", error)
     return null
@@ -103,5 +115,5 @@ export default async function UserProfilePage({ params }: { params: Promise<{ us
     notFound()
   }
 
-  return <PublicProfile user={profile.user} links={profile.links} appearance={profile.appearance} />
+  return <PublicProfile user={profile.user} links={profile.links} appearance={profile.appearance} socialLinks={profile.socialLinks} />
 }

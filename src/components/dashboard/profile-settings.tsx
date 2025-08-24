@@ -12,19 +12,37 @@ import { Separator } from "@/components/ui/separator"
 import { Camera, Palette, Eye } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { AvatarUpload } from "@/components/ui/avatar-upload"
+import { SocialMediaManager } from "@/components/ui/social-media-manager"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import React from "react"
 
 interface ProfileSettingsProps {
-  user: { id: string; name: string; username: string; email: string; avatar_url?: string; bio?: string } | null
+  user: { 
+    id: string; 
+    name: string; 
+    username: string; 
+    email: string; 
+    avatar_url?: string; 
+    bio?: string;
+    about_me?: string;
+    hobby?: string;
+    tech_stack?: string;
+    footer_message?: string;
+    welcome_message?: string;
+  } | null
   onUserUpdate: () => void
 }
 
 const profileSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   bio: z.string().max(160, "Bio must be less than 160 characters").optional(),
+  about_me: z.string().max(1000, "About me must be less than 1000 characters").optional(),
+  hobby: z.string().max(500, "Hobby must be less than 500 characters").optional(),
+  tech_stack: z.string().max(500, "Tech stack must be less than 500 characters").optional(),
+  footer_message: z.string().max(200, "Footer message must be less than 200 characters").optional(),
+  welcome_message: z.string().max(150, "Welcome message must be less than 150 characters").optional(),
 })
 
 const appearanceSchema = z.object({
@@ -58,6 +76,11 @@ export function ProfileSettings({ user, onUserUpdate }: ProfileSettingsProps) {
     defaultValues: {
       name: user?.name || "",
       bio: user?.bio || "",
+      about_me: user?.about_me || "",
+      hobby: user?.hobby || "",
+      tech_stack: user?.tech_stack || "",
+      footer_message: user?.footer_message || "",
+      welcome_message: user?.welcome_message || "",
     },
   })
 
@@ -239,6 +262,71 @@ export function ProfileSettings({ user, onUserUpdate }: ProfileSettingsProps) {
               <p className="text-xs text-gray-600 dark:text-gray-400">{user?.bio?.length || 0}/160 characters</p>
             </div>
 
+            <div className="space-y-2">
+              <Label htmlFor="welcome_message">Welcome Message</Label>
+              <Textarea
+                id="welcome_message"
+                {...register("welcome_message")}
+                className={errors.welcome_message ? "border-red-500" : ""}
+                placeholder="Add a welcome greeting for your visitors (e.g., 'Hi There! Welcome To My Profile👋')"
+                rows={2}
+              />
+              {errors.welcome_message && <p className="text-sm text-red-500">{errors.welcome_message.message}</p>}
+              <p className="text-xs text-gray-600 dark:text-gray-400">{user?.welcome_message?.length || 0}/150 characters</p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="about_me">About Me</Label>
+              <Textarea
+                id="about_me"
+                {...register("about_me")}
+                className={errors.about_me ? "border-red-500" : ""}
+                placeholder="Write a detailed description about yourself..."
+                rows={4}
+              />
+              {errors.about_me && <p className="text-sm text-red-500">{errors.about_me.message}</p>}
+              <p className="text-xs text-gray-600 dark:text-gray-400">{user?.about_me?.length || 0}/1000 characters</p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="hobby">Hobbies & Interests</Label>
+              <Textarea
+                id="hobby"
+                {...register("hobby")}
+                className={errors.hobby ? "border-red-500" : ""}
+                placeholder="What do you like to do in your free time?"
+                rows={3}
+              />
+              {errors.hobby && <p className="text-sm text-red-500">{errors.hobby.message}</p>}
+              <p className="text-xs text-gray-600 dark:text-gray-400">{user?.hobby?.length || 0}/500 characters</p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="tech_stack">Tech Stack</Label>
+              <Textarea
+                id="tech_stack"
+                {...register("tech_stack")}
+                className={errors.tech_stack ? "border-red-500" : ""}
+                placeholder="What technologies do you work with? (e.g., React, Node.js, Python...)"
+                rows={3}
+              />
+              {errors.tech_stack && <p className="text-sm text-red-500">{errors.tech_stack.message}</p>}
+              <p className="text-xs text-gray-600 dark:text-gray-400">{user?.tech_stack?.length || 0}/500 characters</p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="footer_message">Footer Message</Label>
+              <Textarea
+                id="footer_message"
+                {...register("footer_message")}
+                className={errors.footer_message ? "border-red-500" : ""}
+                placeholder="Add a custom footer message to your profile (e.g., 'Thank you for visiting my profile! 👋')"
+                rows={2}
+              />
+              {errors.footer_message && <p className="text-sm text-red-500">{errors.footer_message.message}</p>}
+              <p className="text-xs text-gray-600 dark:text-gray-400">{user?.footer_message?.length || 0}/200 characters</p>
+            </div>
+
             <Button type="submit" disabled={isLoading}>
               {isLoading ? "Updating..." : "Update Profile"}
             </Button>
@@ -378,6 +466,9 @@ export function ProfileSettings({ user, onUserUpdate }: ProfileSettingsProps) {
           </form>
         </CardContent>
       </Card>
+
+      {/* Social Media Links */}
+      <SocialMediaManager onLinksUpdate={onUserUpdate} />
 
       {/* Account Information */}
       <Card>
