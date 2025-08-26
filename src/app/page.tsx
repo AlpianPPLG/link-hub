@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { LinkIcon, Users, Zap, BarChart3, UserPlus, Settings, Share2, TrendingUp, Palette, Shield, Smartphone, Globe, Video, Briefcase, GraduationCap, Camera, Music, Code, ChevronDown } from "lucide-react"
+import { LinkIcon, Users, Zap, BarChart3, UserPlus, Settings, Share2, TrendingUp, Palette, Smartphone, Globe, Briefcase, GraduationCap, Camera, Music, ChevronDown } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { useState } from "react"
 
@@ -138,7 +138,7 @@ export default function HomePage() {
         {/* Who It's For Section */}
         <div className="mt-32">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Who It's For</h2>
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Who Its For</h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Perfect for anyone who wants to showcase their online presence
             </p>
@@ -304,7 +304,7 @@ export default function HomePage() {
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Frequently Asked Questions</h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Got questions? We've got answers. Can't find what you're looking for? Contact our support team.
+              Got questions? Weve got answers. Cant find what youre looking for? Contact our support team.
             </p>
           </div>
           

@@ -25,7 +25,7 @@ interface LinkManagerProps {
 }
 
 export function LinkManager({ links, onLinksChange }: LinkManagerProps) {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading] = useState(false)
 
   // Refresh links when component mounts or when links change
   useEffect(() => {
@@ -33,18 +33,6 @@ export function LinkManager({ links, onLinksChange }: LinkManagerProps) {
   }, [])
 
   const handleLinkAdded = () => {
-    onLinksChange()
-  }
-
-  const handleLinkUpdated = () => {
-    onLinksChange()
-  }
-
-  const handleLinkDeleted = () => {
-    onLinksChange()
-  }
-
-  const handleToggleChanged = () => {
     onLinksChange()
   }
 

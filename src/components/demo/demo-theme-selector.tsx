@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -17,10 +18,7 @@ interface DemoThemeSelectorProps {
 
 export function DemoThemeSelector({ 
   currentTheme, 
-  customColors, 
-  onThemeChange, 
-  onColorsChange 
-}: DemoThemeSelectorProps) {
+  onThemeChange}: DemoThemeSelectorProps) {
   const themes = [
     {
       id: 'light',

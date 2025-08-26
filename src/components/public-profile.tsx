@@ -117,6 +117,7 @@ export function PublicProfile({ user, links, appearance, socialLinks }: PublicPr
           text: user.bio || `Check out ${user.name}'s links`,
           url: url,
         })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         // Fallback to clipboard
         copyToClipboard(url)

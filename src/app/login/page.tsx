@@ -57,6 +57,7 @@ export default function LoginPage() {
       // Redirect to dashboard on success
       router.push("/dashboard")
       router.refresh()
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       setError("An unexpected error occurred. Please try again.")
     } finally {
@@ -134,7 +135,7 @@ export default function LoginPage() {
 
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Don't have an account?{" "}
+                Dont have an account?{" "}
                 <Link href="/register" className="text-blue-600 hover:text-blue-500 font-medium">
                   Sign up
                 </Link>

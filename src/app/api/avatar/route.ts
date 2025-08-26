@@ -51,6 +51,7 @@ export async function POST(request: NextRequest) {
     const uploadsDir = join(process.cwd(), "public", "uploads", "avatars")
     try {
       await mkdir(uploadsDir, { recursive: true })
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       // Directory might already exist, that's fine
     }

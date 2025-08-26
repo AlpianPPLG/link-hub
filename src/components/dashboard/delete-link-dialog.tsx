@@ -48,7 +48,7 @@ export function DeleteLinkDialog({ linkId, linkTitle, onLinkDeleted }: DeleteLin
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Link</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete "{linkTitle}"? This action cannot be undone and will permanently remove this link from your profile.
+            Are you sure you want to delete &quot;{linkTitle}&quot;? This action cannot be undone and will permanently remove this link from your profile.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

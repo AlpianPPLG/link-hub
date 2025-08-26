@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client"
 
 import { Card } from "@/components/ui/card"
@@ -25,7 +26,7 @@ interface DemoPreviewProps {
   }
 }
 
-export function DemoPreview({ profile, links, theme, customColors }: DemoPreviewProps) {
+export function DemoPreview({ profile, links, theme }: DemoPreviewProps) {
   const getThemeClasses = () => {
     switch (theme) {
       case 'dark':

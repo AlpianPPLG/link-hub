@@ -85,6 +85,7 @@ export function SocialMediaIcons({
       }).catch(() => {
         // Ignore tracking errors
       })
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       // Ignore tracking errors
     }

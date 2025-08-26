@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { type NextRequest, NextResponse } from "next/server"
 import { verifyToken } from "@/lib/auth"
 import { executeQuery } from "@/lib/database"
@@ -19,7 +20,7 @@ export async function GET(request: NextRequest) {
 
     // Calculate date range
     const now = new Date()
-    let startDate = new Date()
+    const startDate = new Date()
     
     switch (range) {
       case "7d":

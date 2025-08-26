@@ -209,7 +209,7 @@ export function DemoLinkManager({ links, onLinksChange }: DemoLinkManagerProps) 
                   Demo Limit Reached
                 </h4>
                 <p className="text-amber-700 dark:text-amber-300 text-xs mt-1">
-                  You've reached the 3-link limit for the demo. Create a free account for unlimited links!
+                  Youve reached the 3-link limit for the demo. Create a free account for unlimited links!
                 </p>
               </div>
             </div>

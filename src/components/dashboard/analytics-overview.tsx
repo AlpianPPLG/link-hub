@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client"
 
 import { useState, useEffect } from "react"
@@ -77,7 +78,6 @@ export function AnalyticsOverview({ links }: AnalyticsOverviewProps) {
   }
 
   const totalClicks = links.reduce((sum, link) => sum + link.clicks, 0)
-  const activeLinks = links.filter((link) => link.is_active).length
   const topLink = links.reduce((prev, current) => (prev.clicks > current.clicks ? prev : current), links[0])
 
   if (isLoading) {

@@ -3,7 +3,6 @@
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { DraggableLink } from "./draggable-link"
-import { toast } from "sonner"
 
 interface Link {
   id: string

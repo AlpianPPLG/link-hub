@@ -5,12 +5,12 @@
  * This script removes problematic custom color values that conflict with theme preferences
  */
 
-const fs = require('fs');
-const path = require('path');
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 // Read the SQL cleanup script
-const sqlScriptPath = path.join(__dirname, 'clean-custom-colors.sql');
-const sqlScript = fs.readFileSync(sqlScriptPath, 'utf8');
+const sqlScriptPath = join(__dirname, 'clean-custom-colors.sql');
+const sqlScript = readFileSync(sqlScriptPath, 'utf8');
 
 console.log('🧹 Custom Color Cleanup Script');
 console.log('============================');

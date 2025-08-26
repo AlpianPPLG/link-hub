@@ -24,6 +24,7 @@ export function AuthGuard({ children }: AuthGuardProps) {
         } else {
           router.push("/login")
         }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         router.push("/login")
       } finally {

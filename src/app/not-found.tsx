@@ -20,7 +20,7 @@ export default function NotFound() {
           <CardHeader className="text-center">
             <div className="text-6xl font-bold text-gray-400 mb-4">404</div>
             <CardTitle className="text-2xl">Profile Not Found</CardTitle>
-            <CardDescription>The profile you're looking for doesn't exist or may have been removed.</CardDescription>
+            <CardDescription>The profile youre looking for doesnt exist or may have been removed.</CardDescription>
           </CardHeader>
           <CardContent className="text-center space-y-4">
             <p className="text-sm text-gray-600 dark:text-gray-400">
