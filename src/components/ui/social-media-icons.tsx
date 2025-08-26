@@ -134,7 +134,15 @@ export function SocialMediaIcons({
               border-2
               hover:border-transparent
               active:scale-95
+              bg-white text-gray-700 border-gray-300
+              hover:shadow-lg
+              !important
             `}
+            style={{
+              backgroundColor: '#ffffff',
+              color: '#374151',
+              borderColor: '#d1d5db'
+            }}
             onClick={() => handleSocialClick(link.platform, link.url)}
             title={`Visit ${link.platform.charAt(0).toUpperCase() + link.platform.slice(1)}`}
           >

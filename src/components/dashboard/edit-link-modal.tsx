@@ -102,7 +102,7 @@ export function EditLinkModal({ link, onLinkUpdated }: EditLinkModalProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
           <Pencil className="h-4 w-4" />
         </Button>
       </DialogTrigger>

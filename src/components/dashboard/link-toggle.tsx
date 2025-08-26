@@ -53,7 +53,7 @@ export function LinkToggle({ linkId, isActive, onToggleChanged }: LinkToggleProp
       checked={checked}
       onCheckedChange={handleToggle}
       disabled={loading}
-      className="data-[state=checked]:bg-black"
+      className="data-[state=checked]:bg-gray-900 dark:data-[state=checked]:bg-white"
     />
   )
 }

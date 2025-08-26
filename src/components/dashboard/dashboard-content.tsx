@@ -11,6 +11,7 @@ import { LinkIcon, Settings, LogOut, BarChart3, Eye } from "lucide-react"
 import { LinkManager } from "./link-manager"
 import { ProfileSettings } from "./profile-settings"
 import { AnalyticsOverview } from "./analytics-overview"
+
 import { DashboardSkeleton } from "@/components/loading-skeleton"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { toast } from "sonner"
@@ -165,8 +166,8 @@ export function DashboardContent() {
                       .toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <CardTitle className="text-xl">{user?.name}</CardTitle>
-                <CardDescription>@{user?.username}</CardDescription>
+                <CardTitle className="text-xl text-gray-900 dark:text-white">{user?.name}</CardTitle>
+                <CardDescription className="text-gray-600 dark:text-gray-400">@{user?.username}</CardDescription>
                 <div className="flex justify-center mt-2">
                   <Badge variant="secondary" className="text-xs">
                     linkhub.com/{user?.username}
@@ -177,11 +178,11 @@ export function DashboardContent() {
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600 dark:text-gray-400">Active Links</span>
-                    <span className="font-medium">{activeLinks}</span>
+                    <span className="font-medium text-gray-900 dark:text-white">{activeLinks}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600 dark:text-gray-400">Total Clicks</span>
-                    <span className="font-medium">{totalClicks}</span>
+                    <span className="font-medium text-gray-900 dark:text-white">{totalClicks}</span>
                   </div>
                 </div>
                 <Separator className="my-4" />
@@ -202,6 +203,7 @@ export function DashboardContent() {
                     <BarChart3 className="h-4 w-4 mr-2" />
                     Analytics
                   </Button>
+
                   <Button
                     variant={activeTab === "settings" ? "default" : "ghost"}
                     className="w-full justify-start"
@@ -219,6 +221,7 @@ export function DashboardContent() {
           <div className="lg:col-span-3">
             {activeTab === "links" && <LinkManager links={links} onLinksChange={fetchLinks} />}
             {activeTab === "analytics" && <AnalyticsOverview links={links} />}
+
             {activeTab === "settings" && <ProfileSettings user={user} onUserUpdate={fetchUserData} />}
           </div>
         </div>

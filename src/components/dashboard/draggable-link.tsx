@@ -53,22 +53,22 @@ export function DraggableLink({
         {/* Drag Handle */}
         <div
           {...dragHandleProps}
-          className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 transition-colors"
+          className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
         >
           <GripVertical className="h-5 w-5" />
         </div>
 
         {/* Link Content */}
         <div className="flex-1 min-w-0">
-          <h3 className="font-medium text-gray-900 truncate">{link.title}</h3>
-          <p className="text-sm text-gray-500 truncate">{link.url}</p>
+          <h3 className="font-medium text-gray-900 dark:text-white truncate">{link.title}</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{link.url}</p>
           {link.description && (
-            <p className="text-xs text-gray-400 mt-1 truncate">{link.description}</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 truncate">{link.description}</p>
           )}
         </div>
 
         {/* Link Stats */}
-        <div className="flex items-center gap-2 text-sm text-gray-500">
+        <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
           <span>{link.clicks} clicks</span>
         </div>
 
@@ -83,7 +83,7 @@ export function DraggableLink({
           <Button
             variant="ghost"
             size="sm"
-            className="h-8 w-8 p-0"
+            className="h-8 w-8 p-0 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
             onClick={handleExternalClick}
             title="Open link"
           >

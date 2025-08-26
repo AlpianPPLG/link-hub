@@ -13,6 +13,7 @@ import { Camera, Palette, Eye } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { AvatarUpload } from "@/components/ui/avatar-upload"
 import { SocialMediaManager } from "@/components/ui/social-media-manager"
+
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -54,6 +55,8 @@ const appearanceSchema = z.object({
 
 type ProfileFormData = z.infer<typeof profileSchema>
 type AppearanceFormData = z.infer<typeof appearanceSchema>
+
+
 
 export function ProfileSettings({ user, onUserUpdate }: ProfileSettingsProps) {
   const [isLoading, setIsLoading] = useState(false)
@@ -404,8 +407,26 @@ export function ProfileSettings({ user, onUserUpdate }: ProfileSettingsProps) {
               <div>
                 <Label className="text-base font-medium">Custom Colors</Label>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Override theme colors with your own (optional)
+                  Override theme colors with your own (optional). Leave empty to use theme defaults.
                 </p>
+                <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
+                  ⚠️ Avoid using pure black (#000000) or white (#ffffff) as they may conflict with themes.
+                </p>
+              </div>
+
+              <div className="flex justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setAppearanceValue("custom_background_color", "")
+                    setAppearanceValue("custom_button_color", "")
+                    setAppearanceValue("custom_text_color", "")
+                  }}
+                >
+                  Reset Colors
+                </Button>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -469,6 +490,8 @@ export function ProfileSettings({ user, onUserUpdate }: ProfileSettingsProps) {
 
       {/* Social Media Links */}
       <SocialMediaManager onLinksUpdate={onUserUpdate} />
+
+
 
       {/* Account Information */}
       <Card>

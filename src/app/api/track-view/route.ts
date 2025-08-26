@@ -8,7 +8,26 @@ const trackViewSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
+    // Check if request has content
+    const contentLength = request.headers.get('content-length')
+    if (!contentLength || contentLength === '0') {
+      return NextResponse.json({ error: "Request body is required" }, { status: 400 })
+    }
+
+    // Check content type
+    const contentType = request.headers.get('content-type')
+    if (!contentType || !contentType.includes('application/json')) {
+      return NextResponse.json({ error: "Content-Type must be application/json" }, { status: 400 })
+    }
+
+    let body
+    try {
+      body = await request.json()
+    } catch (jsonError) {
+      console.error("JSON parsing error:", jsonError)
+      return NextResponse.json({ error: "Invalid JSON format" }, { status: 400 })
+    }
+
     const { username } = trackViewSchema.parse(body)
 
     // Get client information

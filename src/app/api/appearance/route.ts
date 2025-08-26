@@ -55,6 +55,28 @@ export async function PUT(request: NextRequest) {
     const body = await request.json()
     const validatedData = appearanceSchema.parse(body)
 
+    // Filter out default/meaningless custom colors
+    const cleanCustomBackgroundColor = 
+      validatedData.custom_background_color === "" || 
+      validatedData.custom_background_color === "#000000" || 
+      validatedData.custom_background_color === "#ffffff" 
+        ? null 
+        : validatedData.custom_background_color
+
+    const cleanCustomButtonColor = 
+      validatedData.custom_button_color === "" || 
+      validatedData.custom_button_color === "#000000" || 
+      validatedData.custom_button_color === "#ffffff" 
+        ? null 
+        : validatedData.custom_button_color
+
+    const cleanCustomTextColor = 
+      validatedData.custom_text_color === "" || 
+      validatedData.custom_text_color === "#000000" || 
+      validatedData.custom_text_color === "#ffffff" 
+        ? null 
+        : validatedData.custom_text_color
+
     // Check if appearance record exists
     const existingAppearance = (await executeQuery("SELECT user_id FROM appearances WHERE user_id = ?", [
       user.id,
@@ -67,9 +89,9 @@ export async function PUT(request: NextRequest) {
         [
           user.id,
           validatedData.profile_theme,
-          validatedData.custom_background_color || null,
-          validatedData.custom_button_color || null,
-          validatedData.custom_text_color || null,
+          cleanCustomBackgroundColor,
+          cleanCustomButtonColor,
+          cleanCustomTextColor,
         ],
       )
     } else {
@@ -78,9 +100,9 @@ export async function PUT(request: NextRequest) {
         "UPDATE appearances SET profile_theme = ?, custom_background_color = ?, custom_button_color = ?, custom_text_color = ?, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?",
         [
           validatedData.profile_theme,
-          validatedData.custom_background_color || null,
-          validatedData.custom_button_color || null,
-          validatedData.custom_text_color || null,
+          cleanCustomBackgroundColor,
+          cleanCustomButtonColor,
+          cleanCustomTextColor,
           user.id,
         ],
       )

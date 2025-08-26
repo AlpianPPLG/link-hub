@@ -15,6 +15,18 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
       defaultTheme="system"
       enableSystem
       disableTransitionOnChange
+      storageKey="linkhub-theme"
+      themes={[
+        "light",
+        "dark",
+        "forest",
+        "ocean",
+        "sunset",
+        "galaxy",
+        "minimal",
+        "custom",
+        "system"
+      ]}
       {...props}
     >
       {children}

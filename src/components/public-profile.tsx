@@ -57,12 +57,23 @@ export function PublicProfile({ user, links, appearance, socialLinks }: PublicPr
 
   useEffect(() => {
     const trackView = async () => {
+      // Validate user data before making request
+      if (!user?.username || typeof user.username !== 'string') {
+        console.warn('Invalid username for tracking view:', user?.username)
+        return
+      }
+
       try {
-        await fetch("/api/track-view", {
+        const response = await fetch("/api/track-view", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username: user.username }),
         })
+
+        if (!response.ok) {
+          const errorText = await response.text()
+          console.error('Track view error:', response.status, errorText)
+        }
       } catch (error) {
         console.error("Error tracking view:", error)
       }
@@ -73,14 +84,23 @@ export function PublicProfile({ user, links, appearance, socialLinks }: PublicPr
 
   const handleLinkClick = async (linkId: string, url: string) => {
     // Track the click
-    try {
-      await fetch("/api/track-click", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ linkId }),
-      })
-    } catch (error) {
-      console.error("Error tracking click:", error)
+    if (linkId && typeof linkId === 'string') {
+      try {
+        const response = await fetch("/api/track-click", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ linkId }),
+        })
+
+        if (!response.ok) {
+          const errorText = await response.text()
+          console.error('Track click error:', response.status, errorText)
+        }
+      } catch (error) {
+        console.error("Error tracking click:", error)
+      }
+    } else {
+      console.warn('Invalid linkId for tracking click:', linkId)
     }
 
     // Open the link
@@ -156,7 +176,28 @@ export function PublicProfile({ user, links, appearance, socialLinks }: PublicPr
   const getCustomStyles = () => {
     const styles: React.CSSProperties = {}
 
-    if (appearance.custom_background_color) {
+    // Only apply custom background color if it's set and not conflicting with theme
+    if (appearance.custom_background_color && 
+        appearance.custom_background_color !== "#000000" && 
+        appearance.custom_background_color !== "#ffffff") {
+      styles.backgroundColor = appearance.custom_background_color
+    }
+    // For light theme, don't apply dark background colors
+    else if (appearance.profile_theme === "light" && 
+             appearance.custom_background_color === "#000000") {
+      // Don't apply black background for light theme
+    }
+    // For dark themes, don't apply light background colors
+    else if ((appearance.profile_theme === "dark" || 
+              appearance.profile_theme === "forest" || 
+              appearance.profile_theme === "ocean") && 
+             appearance.custom_background_color === "#ffffff") {
+      // Don't apply white background for dark themes
+    }
+    else if (appearance.custom_background_color && 
+             appearance.custom_background_color !== "" && 
+             appearance.custom_background_color !== "#000000" && 
+             appearance.custom_background_color !== "#ffffff") {
       styles.backgroundColor = appearance.custom_background_color
     }
 
@@ -166,7 +207,11 @@ export function PublicProfile({ user, links, appearance, socialLinks }: PublicPr
   const getCustomButtonStyles = () => {
     const styles: React.CSSProperties = {}
 
-    if (appearance.custom_button_color) {
+    // Only apply custom button color if it's meaningful and not conflicting
+    if (appearance.custom_button_color && 
+        appearance.custom_button_color !== "" && 
+        appearance.custom_button_color !== "#000000" && 
+        appearance.custom_button_color !== "#ffffff") {
       styles.backgroundColor = appearance.custom_button_color
       // Calculate contrasting text color
       const hex = appearance.custom_button_color.replace("#", "")
@@ -183,8 +228,24 @@ export function PublicProfile({ user, links, appearance, socialLinks }: PublicPr
   const getCustomTextStyles = () => {
     const styles: React.CSSProperties = {}
 
-    if (appearance.custom_text_color) {
+    // Only apply custom text color if it's meaningful and not conflicting with theme
+    if (appearance.custom_text_color && 
+        appearance.custom_text_color !== "" && 
+        appearance.custom_text_color !== "#000000" && 
+        appearance.custom_text_color !== "#ffffff") {
       styles.color = appearance.custom_text_color
+    }
+    // For light theme with black text, don't override (it's already correct)
+    else if (appearance.profile_theme === "light" && 
+             appearance.custom_text_color === "#000000") {
+      // Don't override - let theme handle it
+    }
+    // For dark themes with white text, don't override (it's already correct)
+    else if ((appearance.profile_theme === "dark" || 
+              appearance.profile_theme === "forest" || 
+              appearance.profile_theme === "ocean") && 
+             appearance.custom_text_color === "#ffffff") {
+      // Don't override - let theme handle it
     }
 
     return styles
